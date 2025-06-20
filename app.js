@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     "NOTIFICACIONES - PQRSD": ["Insuasty, Daniel Ismael"],
     "NOTIFICACIONES": ["Gomez, Natalia", "Gutierrez, Valentina", "Alvarez, Carlos William", "Garavito, Gabriela Alexandra", "Mahecha, Diego Andres", "Peña, Jairo Esteban", "Rincon, Nathaly Dayana", "Sandoval, Diego Mauricio", "Santamaria, Edinson Yesid", "Hernandez, Diego Andres", "John Edwar Olarte"],
     "LEGALIZACIONES": ["Castiblanco, Jonathan Javier", "Saavedra, Jenny Alexandra", "Ojeda, Maria Alejandra", "Rodriguez, Andrés Eduardo", "Ruiz, Daissy Katerine"],
-    "ANTENCION PRESENCIAL": ["Alvarez, Katherine"],
+    "ANTENCION PRESENCIAL": ["Alvarez, Katherine"]
   };
 
   const lideresCalidad = ["Rene Alejandro Mayorga", "Andrea Guzman Botache"];
@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const procesoSelect = document.getElementById('proceso');
   const asesorSelect = document.getElementById('asesor');
   const evaluadorSelect = document.getElementById('evaluador');
+  const radicadoInput = document.getElementById('radicado');
+  const cumplimientoSelects = document.querySelectorAll('.cumplimiento');
+  const notaSpan = document.getElementById('nota');
 
-  // Verificación: si no existen los elementos, salimos
-  if (!procesoSelect || !asesorSelect || !evaluadorSelect) return;
-
-  // Cargar los evaluadores
+  // Llenar evaluadores
   lideresCalidad.forEach(nombre => {
     const option = document.createElement('option');
     option.value = nombre;
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     evaluadorSelect.appendChild(option);
   });
 
-  // Al cambiar el proceso, se actualizan los asesores
+  // Filtrar asesores por proceso
   procesoSelect.addEventListener('change', () => {
     const proceso = procesoSelect.value;
     const asesores = asesoresPorProceso[proceso] || [];
@@ -37,53 +37,49 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Lógica de cálculo de nota
-  const cumplimientoSelects = document.querySelectorAll('.cumplimiento');
-  const notaSpan = document.getElementById('nota');
-  const pesos = [50, 30, 20];
-
-  const calcularNota = () => {
+  // Lógica de nota
+  const pesos = [50, 30, 20, 100, 100, 100, 100, 100];
+  function calcularNota() {
     let nota = 100;
     for (let i = 0; i < cumplimientoSelects.length; i++) {
-      const val = cumplimientoSelects[i].value;
-      if (val === 'NO') {
-        if (i < 3) nota -= pesos[i];
-        else return 0;
+      const valor = cumplimientoSelects[i].value;
+      if (valor === 'NO') {
+        if (i < 3) {
+          nota -= pesos[i];
+        } else {
+          return 0;
+        }
       }
     }
     return nota;
-  };
+  }
 
-  const updateNota = () => {
+  function actualizarNota() {
     const nota = calcularNota();
     notaSpan.textContent = `${nota}%`;
-  };
+  }
 
   cumplimientoSelects.forEach(select => {
-    select.addEventListener('change', updateNota);
+    select.addEventListener('change', actualizarNota);
   });
 
-  // Ya no se restringe el campo de radicado
-  // document.getElementById('radicado').addEventListener('input', function () {
-  //   this.value = this.value.replace(/\D/g, '');
-  // });
-
-  // Guardar monitoreo
+  // Envío a Google Sheets
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
+
     const nota = calcularNota();
     const semaforo = nota >= 90 ? '🟢 Excelente' : nota >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar';
-    const evaluador = document.getElementById('evaluador').value;
+    const evaluador = evaluadorSelect.value;
 
     alert(`${evaluador}, la auditoría se ha guardado con éxito.\nNota: ${nota}%\n${semaforo}`);
 
     const data = {
       fechaAuditoria: document.getElementById('fecha-auditoria').value,
       fechaGestion: document.getElementById('fecha-gestion').value,
-      proceso: document.getElementById('proceso').value,
-      asesor: document.getElementById('asesor').value,
+      proceso: procesoSelect.value,
+      asesor: asesorSelect.value,
       evaluador: evaluador,
-      radicado: document.getElementById('radicado').value,
+      radicado: radicadoInput.value,
       c1: document.getElementById('c1').value,
       c2: document.getElementById('c2').value,
       c3: document.getElementById('c3').value,
@@ -110,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
     notaSpan.textContent = '100%';
   });
 
-  // Exportar a Excel
+  // Botón Exportar Excel
   document.getElementById('btnExportarExcel').addEventListener('click', function () {
     const headers = ["Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
       "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8",
