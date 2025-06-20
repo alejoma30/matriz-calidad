@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     "NOTIFICACIONES - PQRSD": ["Insuasty, Daniel Ismael"],
     "NOTIFICACIONES": ["Gomez, Natalia", "Gutierrez, Valentina", "Alvarez, Carlos William", "Garavito, Gabriela Alexandra", "Mahecha, Diego Andres", "Peña, Jairo Esteban", "Rincon, Nathaly Dayana", "Sandoval, Diego Mauricio", "Santamaria, Edinson Yesid", "Hernandez, Diego Andres", "John Edwar Olarte"],
     "LEGALIZACIONES": ["Castiblanco, Jonathan Javier", "Saavedra, Jenny Alexandra", "Ojeda, Maria Alejandra", "Rodriguez, Andrés Eduardo", "Ruiz, Daissy Katerine"],
-    "ANTENCION PRESENCIAL": ["Alvarez, Katherine"]
+    "ANTENCION PRESENCIAL": ["Alvarez, Katherine"],
   };
 
   const lideresCalidad = ["Rene Alejandro Mayorga", "Andrea Guzman Botache"];
@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     alert(`${evaluador}, la auditoría se ha guardado con éxito.\nNota: ${nota}%\n${semaforo}`);
 
+    // Preparar datos
     const data = {
       fechaAuditoria: document.getElementById('fecha-auditoria').value,
       fechaGestion: document.getElementById('fecha-gestion').value,
@@ -89,8 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
       semaforo: semaforo
     };
 
-    // ✅ Enviar a Google Sheets - URL ACTUALIZADA:
-    fetch("https://script.google.com/macros/s/AKfycbx_NtKOyxjSeAeuvaEvYN-aGEB6d7luqi6RcdOaqN7J_245K3wDa2JVNfGHX1QaYoDZ/exec", {
+    // ✅ Enviar a Google Sheets
+    fetch("https://script.google.com/macros/s/AKfycbyYJcBGjCfjxUgCMCE4-5rcgJuz-6Dx2s23uoXr0lLjrFZHe51EiRcIkmvQlOmOpYkAlg/exec", {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
@@ -102,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     notaSpan.textContent = '100%';
   });
 
+  // ✅ Exportar a Excel
   document.getElementById('btnExportarExcel').addEventListener('click', function () {
     const headers = ["Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
       "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8",
