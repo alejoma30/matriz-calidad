@@ -1,3 +1,5 @@
+// app.js
+
 document.addEventListener('DOMContentLoaded', function () {
   const asesoresPorProceso = {
     "PQRSD": ["Avila, Marcela Paola", "Beltran, Nicole Juliana", "Castro, Diana Angelica", "Fuentes, Sandra Milena", "Lopez, Angela Marcela", "Roa, Cindy Paola", "Sanchez, Hellen Viviana", "Nadya Eliscet Bernal Escobar"],
@@ -8,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const lideresCalidad = ["Rene Alejandro Mayorga", "Andrea Guzman Botache"];
+
   const evaluadorSelect = document.getElementById('evaluador');
   lideresCalidad.forEach(nombre => {
     const option = document.createElement('option');
@@ -56,9 +59,11 @@ document.addEventListener('DOMContentLoaded', function () {
     select.addEventListener('change', updateNota);
   });
 
+  // Fecha auditoría por defecto
+  document.getElementById('fecha-auditoria').valueAsDate = new Date();
+
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
-
     const nota = calcularNota();
     const semaforo = nota >= 90 ? '🟢 Excelente' : nota >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar';
     const evaluador = document.getElementById('evaluador').value;
@@ -72,21 +77,20 @@ document.addEventListener('DOMContentLoaded', function () {
       asesor: document.getElementById('asesor').value,
       evaluador: evaluador,
       radicado: document.getElementById('radicado').value,
-      c1: document.getElementById('c1').value,
-      c2: document.getElementById('c2').value,
-      c3: document.getElementById('c3').value,
-      c4: document.getElementById('c4').value,
-      c5: document.getElementById('c5').value,
-      c6: document.getElementById('c6').value,
-      c7: document.getElementById('c7').value,
-      c8: document.getElementById('c8').value,
+      "Uso de plantillas": document.getElementById('c1').value,
+      "Claridad del lenguaje": document.getElementById('c2').value,
+      "Redacción – puntuación": document.getElementById('c3').value,
+      "Redacción – ortografía": document.getElementById('c4').value,
+      "Interpretación de la solicitud": document.getElementById('c5').value,
+      "Oportunidad en la respuesta": document.getElementById('c6').value,
+      "Pertinencia de la respuesta": document.getElementById('c7').value,
+      "Desempeño": document.getElementById('c8').value,
       observaciones: document.getElementById('observaciones').value,
       retroalimentacion: document.getElementById('feedback').value,
       nota: nota,
       semaforo: semaforo
     };
 
-    // ✅ Enviar a Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbz875DEEnTkNiYEjmdJI15MR0gvrW07GQNtt_JSG0KVOHmx58zQN3GVHgl1XZq3f_Y9/exec", {
       method: 'POST',
       body: JSON.stringify(data),
@@ -95,16 +99,18 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(resp => console.log("Enviado a Sheets:", resp))
       .catch(err => console.error("Error al enviar a Sheets:", err));
 
-    // Limpiar formulario
     this.reset();
     notaSpan.textContent = '100%';
+    document.getElementById('fecha-auditoria').valueAsDate = new Date();
   });
 
-  // Botón Exportar a Excel
   document.getElementById('btnExportarExcel').addEventListener('click', function () {
-    const headers = ["Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
-      "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8",
-      "Observaciones", "Retroalimentación", "Nota", "Semáforo"];
+    const headers = [
+      "Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
+      "Uso de plantillas", "Claridad del lenguaje", "Redacción – puntuación", "Redacción – ortografía",
+      "Interpretación de la solicitud", "Oportunidad en la respuesta", "Pertinencia de la respuesta", "Desempeño",
+      "Observaciones", "Retroalimentación", "Nota", "Semáforo"
+    ];
     const fila = [
       document.getElementById('fecha-auditoria').value,
       document.getElementById('fecha-gestion').value,
