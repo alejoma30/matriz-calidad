@@ -90,8 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
       semaforo: semaforo
     };
 
-    // Enviar a Google Sheets
-    fetch("https://script.google.com/macros/s/AKfycbwiUeBzoOXJWlzEbZ2CxNZ0pEn-UliN7D-hwLnFz3ObFPbY4oO7rjulTwxd45PvtjkCKQ/exec", {
+    // Enviar a Google Sheets (URL actualizada)
+    fetch("https://script.google.com/macros/s/AKfycbx1y1TIGWHGb6R0Ym_akXlL0flFZON59mPlAvP8cP3O8zUE3oEv9X29mKHE8HE12Dbc/exec", {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
