@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const procesoSelect = document.getElementById('proceso');
   const asesorSelect = document.getElementById('asesor');
+
   procesoSelect.addEventListener('change', () => {
     const asesores = asesoresPorProceso[procesoSelect.value] || [];
     asesorSelect.innerHTML = '<option value="">-- Selecciona --</option>';
@@ -27,6 +28,11 @@ document.addEventListener('DOMContentLoaded', function () {
       option.textContent = nombre;
       asesorSelect.appendChild(option);
     });
+  });
+
+  const radicadoInput = document.getElementById('radicado');
+  radicadoInput.addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '');
   });
 
   const cumplimientoSelects = document.querySelectorAll('.cumplimiento');
@@ -53,15 +59,12 @@ document.addEventListener('DOMContentLoaded', function () {
     select.addEventListener('change', updateNota);
   });
 
-  document.getElementById('radicado').addEventListener('input', function () {
-    this.value = this.value.replace(/\D/g, '');
-  });
-
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
+
     const nota = calcularNota();
-    const evaluador = document.getElementById('evaluador').value;
     const semaforo = nota >= 90 ? '🟢 Excelente' : nota >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar';
+    const evaluador = document.getElementById('evaluador').value;
 
     alert(`${evaluador}, la auditoría se ha guardado con éxito.\nNota: ${nota}%\n${semaforo}`);
 
@@ -70,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function () {
       fechaGestion: document.getElementById('fecha-gestion').value,
       proceso: procesoSelect.value,
       asesor: asesorSelect.value,
-      evaluador,
-      radicado: document.getElementById('radicado').value,
+      evaluador: evaluador,
+      radicado: radicadoInput.value,
       c1: document.getElementById('c1').value,
       c2: document.getElementById('c2').value,
       c3: document.getElementById('c3').value,
@@ -82,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function () {
       c8: document.getElementById('c8').value,
       observaciones: document.getElementById('observaciones').value,
       retroalimentacion: document.getElementById('feedback').value,
-      nota,
-      semaforo
+      nota: nota,
+      semaforo: semaforo
     };
 
     fetch("https://script.google.com/macros/s/AKfycby4Rz-211OzxJbLEGEgj9m7DwXzK-WyxwktreaN0dU4f6jMDfVxKgWfQ9xoW6JecMSd/exec", {
@@ -91,24 +94,25 @@ document.addEventListener('DOMContentLoaded', function () {
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
     }).then(res => res.text())
-      .then(resp => console.log("Enviado a Sheets:", resp))
-      .catch(err => console.error("Error al enviar a Sheets:", err));
+      .then(console.log)
+      .catch(console.error);
 
     this.reset();
-    notaSpan.textContent = "100%";
+    notaSpan.textContent = '100%';
   });
 
   document.getElementById('btnExportarExcel').addEventListener('click', () => {
     const headers = ["Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
       "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8",
       "Observaciones", "Retroalimentación", "Nota", "Semáforo"];
+
     const fila = [
       document.getElementById('fecha-auditoria').value,
       document.getElementById('fecha-gestion').value,
       procesoSelect.value,
       asesorSelect.value,
       evaluadorSelect.value,
-      document.getElementById('radicado').value,
+      radicadoInput.value,
       document.getElementById('c1').value,
       document.getElementById('c2').value,
       document.getElementById('c3').value,
