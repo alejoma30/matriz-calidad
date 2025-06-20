@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+.addEventListener('DOMContentLoaded', function () {
   const asesoresPorProceso = {
     "PQRSD": ["Avila, Marcela Paola", "Beltran, Nicole Juliana", "Castro, Diana Angelica", "Fuentes, Sandra Milena", "Lopez, Angela Marcela", "Roa, Cindy Paola", "Sanchez, Hellen Viviana", "Nadya Eliscet Bernal Escobar"],
     "NOTIFICACIONES - PQRSD": ["Insuasty, Daniel Ismael"],
@@ -91,13 +91,14 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Enviar a Google Sheets
-    fetch("https://script.google.com/macros/s/AKfycbxNkHkEHm6qiVdec5Yu1HPoo9lhjxTExOm4DfQcidnqZ9yDkbUGQ-7aIkZyakFXV-Wm/exec", {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' }
-    }).then(res => res.text())
-      .then(resp => console.log("Enviado a Sheets:", resp))
-      .catch(err => console.error("Error al enviar a Sheets:", err));
+fetch("https://script.google.com/macros/s/AKfycby4Rz-211OzxJbLEGEgj9m7DwXzK-WyxwktreaN0dU4f6jMDfVxKgWfQ9xoW6JecMSd/exec", {
+  method: 'POST',
+  body: JSON.stringify(data),
+  headers: { 'Content-Type': 'application/json' }
+})
+.then(res => res.text())
+.then(resp => console.log("Enviado a Sheets:", resp))
+.catch(err => console.error("Error al enviar a Sheets:", err));
 
     this.reset();
     notaSpan.textContent = '100%';
