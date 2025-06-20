@@ -3,132 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Matriz de Calidad - Monitoreo</title>
+  <title>Matriz de Calidad</title>
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-  <div class="contenedor">
-    <header class="encabezado">
+  <header>
+    <div class="logos">
       <img src="img/logo-emergia.png" alt="Logo Emergía" class="logo" />
-      <h1>Matriz de Calidad - Monitoreo</h1>
       <img src="img/logo-mineducacion.png" alt="Logo MEN" class="logo" />
-    </header>
+    </div>
+    <h1>Matriz de Calidad - Evaluación de Gestión</h1>
+  </header>
 
+  <main>
     <form id="formulario">
-      <div class="form-row">
-        <label for="fecha-auditoria">Fecha auditoría:</label>
-        <input type="date" id="fecha-auditoria" required />
+      <div class="campos">
+        <label>Fecha de Auditoría:
+          <input type="date" id="fecha-auditoria" required>
+        </label>
+        <label>Fecha de Gestión:
+          <input type="date" id="fecha-gestion" required>
+        </label>
+        <label>Proceso:
+          <select id="proceso" required>
+            <option value="">-- Selecciona --</option>
+            <option value="PQRSD">PQRSD</option>
+            <option value="NOTIFICACIONES - PQRSD">NOTIFICACIONES - PQRSD</option>
+            <option value="NOTIFICACIONES">NOTIFICACIONES</option>
+            <option value="LEGALIZACIONES">LEGALIZACIONES</option>
+            <option value="ANTENCION PRESENCIAL">ANTENCION PRESENCIAL</option>
+          </select>
+        </label>
+        <label>Asesor:
+          <select id="asesor" required></select>
+        </label>
+        <label>Evaluador:
+          <select id="evaluador" required></select>
+        </label>
+        <label>Radicado:
+          <input type="text" id="radicado" required>
+        </label>
       </div>
 
-      <div class="form-row">
-        <label for="fecha-gestion">Fecha gestión auditada:</label>
-        <input type="date" id="fecha-gestion" required />
-      </div>
+      <section class="tabla">
+        <h3>Evaluación por Dimensiones</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Peso</th>
+              <th>Tipo Error</th>
+              <th>Precisión</th>
+              <th>Dimensión</th>
+              <th>Cumplimiento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>50%</td><td>ENC</td><td>Usuario Final</td><td>Uso de plantillas</td>
+              <td><select id="c1" class="cumplimiento"><option>SI</option><option>NO</option><option>N/A</option></select></td></tr>
+            <tr><td>30%</td><td>ENC</td><td>Usuario Final</td><td>Claridad del lenguaje</td>
+              <td><select id="c2" class="cumplimiento"><option>SI</option><option>NO</option><option>N/A</option></select></td></tr>
+            <tr><td>20%</td><td>ENC</td><td>Usuario Final</td><td>Redacción – puntuación</td>
+              <td><select id="c3" class="cumplimiento"><option>SI</option><option>NO</option><option>N/A</option></select></td></tr>
+            <tr><td>100%</td><td>EC</td><td>Usuario Final</td><td>Redacción – ortografía</td>
+              <td><select id="c4" class="cumplimiento"><option>SI</option><option>NO</option><option>N/A</option></select></td></tr>
+            <tr><td>100%</td><td>EC</td><td>Usuario Final</td><td>Interpretación de la solicitud</td>
+              <td><select id="c5" class="cumplimiento"><option>SI</option><option>NO</option><option>N/A</option></select></td></tr>
+            <tr><td>100%</td><td>EC</td><td>Negocio / Entidad</td><td>Oportunidad en la respuesta</td>
+              <td><select id="c6" class="cumplimiento"><option>SI</option><option>NO</option><option>N/A</option></select></td></tr>
+            <tr><td>100%</td><td>EC</td><td>Negocio / Entidad</td><td>Pertinencia de la respuesta</td>
+              <td><select id="c7" class="cumplimiento"><option>SI</option><option>NO</option><option>N/A</option></select></td></tr>
+            <tr><td>100%</td><td>EC</td><td>Negocio / Entidad</td><td>Desempeño</td>
+              <td><select id="c8" class="cumplimiento"><option>SI</option><option>NO</option><option>N/A</option></select></td></tr>
+          </tbody>
+        </table>
+      </section>
 
-      <div class="form-row">
-        <label for="proceso">Proceso:</label>
-        <select id="proceso" required>
-          <option value="">-- Selecciona --</option>
-          <option value="PQRSD">PQRSD</option>
-          <option value="NOTIFICACIONES - PQRSD">NOTIFICACIONES - PQRSD</option>
-          <option value="NOTIFICACIONES">NOTIFICACIONES</option>
-          <option value="LEGALIZACIONES">LEGALIZACIONES</option>
-          <option value="ANTENCION PRESENCIAL">ANTENCION PRESENCIAL</option>
-        </select>
-      </div>
+      <label>Observaciones:<br>
+        <textarea id="observaciones" rows="3"></textarea>
+      </label>
+      <label>Retroalimentación:<br>
+        <textarea id="feedback" rows="3"></textarea>
+      </label>
 
-      <div class="form-row">
-        <label for="asesor">Asesor:</label>
-        <select id="asesor" required></select>
-      </div>
-
-      <div class="form-row">
-        <label for="evaluador">Evaluador:</label>
-        <select id="evaluador" required>
-          <option value="">-- Selecciona --</option>
-        </select>
-      </div>
-
-      <div class="form-row">
-        <label for="radicado">Radicado:</label>
-        <input type="text" id="radicado" required />
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Peso (%)</th>
-            <th>Tipo Error</th>
-            <th>Precisión</th>
-            <th>Dimensión</th>
-            <th>Cumplimiento</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>50%</td><td>ENC</td><td>Usuario Final</td><td>Uso de plantillas</td>
-            <td><select id="c1" class="cumplimiento">
-              <option>SI</option><option>NO</option><option>N/A</option>
-            </select></td>
-          </tr>
-          <tr>
-            <td>30%</td><td>ENC</td><td>Usuario Final</td><td>Claridad del lenguaje</td>
-            <td><select id="c2" class="cumplimiento">
-              <option>SI</option><option>NO</option><option>N/A</option>
-            </select></td>
-          </tr>
-          <tr>
-            <td>20%</td><td>ENC</td><td>Usuario Final</td><td>Redacción – puntuación</td>
-            <td><select id="c3" class="cumplimiento">
-              <option>SI</option><option>NO</option><option>N/A</option>
-            </select></td>
-          </tr>
-          <tr>
-            <td>100%</td><td>EC</td><td>Usuario Final</td><td>Redacción – ortografía</td>
-            <td><select id="c4" class="cumplimiento">
-              <option>SI</option><option>NO</option><option>N/A</option>
-            </select></td>
-          </tr>
-          <tr>
-            <td>100%</td><td>EC</td><td>Usuario Final</td><td>Interpretación de la solicitud</td>
-            <td><select id="c5" class="cumplimiento">
-              <option>SI</option><option>NO</option><option>N/A</option>
-            </select></td>
-          </tr>
-          <tr>
-            <td>100%</td><td>EC</td><td>Negocio / Entidad</td><td>Oportunidad en la respuesta</td>
-            <td><select id="c6" class="cumplimiento">
-              <option>SI</option><option>NO</option><option>N/A</option>
-            </select></td>
-          </tr>
-          <tr>
-            <td>100%</td><td>EC</td><td>Negocio / Entidad</td><td>Pertinencia de la respuesta</td>
-            <td><select id="c7" class="cumplimiento">
-              <option>SI</option><option>NO</option><option>N/A</option>
-            </select></td>
-          </tr>
-          <tr>
-            <td>100%</td><td>EC</td><td>Negocio / Entidad</td><td>Desempeño</td>
-            <td><select id="c8" class="cumplimiento">
-              <option>SI</option><option>NO</option><option>N/A</option>
-            </select></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="form-row">
-        <label for="observaciones">Observaciones:</label>
-        <textarea id="observaciones" rows="2"></textarea>
-      </div>
-
-      <div class="form-row">
-        <label for="feedback">Retroalimentación:</label>
-        <textarea id="feedback" rows="2"></textarea>
-      </div>
-
-      <div class="nota-final">
-        Nota: <span id="nota">100%</span>
+      <div class="nota">
+        <strong>Nota:</strong> <span id="nota">100%</span>
       </div>
 
       <div class="botones">
@@ -136,7 +95,7 @@
         <button type="button" id="btnExportarExcel">Exportar a Excel</button>
       </div>
     </form>
-  </div>
+  </main>
 
   <script src="app.js"></script>
 </body>
