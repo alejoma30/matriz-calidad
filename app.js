@@ -55,10 +55,10 @@ document.addEventListener('DOMContentLoaded', function () {
     select.addEventListener('change', updateNota);
   });
 
-  const radicadoInput = document.getElementById('radicado');
-  radicadoInput.addEventListener('input', function () {
-    this.value = this.value.replace(/\D/g, '');
-  });
+  // 🟡 YA NO SE RESTRINGE EL RADICADO
+  // document.getElementById('radicado').addEventListener('input', function () {
+  //   this.value = this.value.replace(/\D/g, '');
+  // });
 
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
