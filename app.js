@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const asesorSelect = document.getElementById('asesor');
 
   procesoSelect.addEventListener('change', () => {
-    const asesores = asesoresPorProceso[procesoSelect.value] || [];
+    const proceso = procesoSelect.value;
+    const asesores = asesoresPorProceso[proceso] || [];
     asesorSelect.innerHTML = '<option value="">-- Selecciona --</option>';
     asesores.forEach(nombre => {
       const option = document.createElement('option');
@@ -30,15 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  const radicadoInput = document.getElementById('radicado');
-  radicadoInput.addEventListener('input', function () {
-    this.value = this.value.replace(/\D/g, '');
-  });
-
   const cumplimientoSelects = document.querySelectorAll('.cumplimiento');
   const notaSpan = document.getElementById('nota');
   const pesos = [50, 30, 20];
-
   const calcularNota = () => {
     let nota = 100;
     for (let i = 0; i < cumplimientoSelects.length; i++) {
@@ -52,16 +47,21 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const updateNota = () => {
-    notaSpan.textContent = `${calcularNota()}%`;
+    const nota = calcularNota();
+    notaSpan.textContent = `${nota}%`;
   };
 
   cumplimientoSelects.forEach(select => {
     select.addEventListener('change', updateNota);
   });
 
+  const radicadoInput = document.getElementById('radicado');
+  radicadoInput.addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '');
+  });
+
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
-
     const nota = calcularNota();
     const semaforo = nota >= 90 ? '🟢 Excelente' : nota >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar';
     const evaluador = document.getElementById('evaluador').value;
@@ -71,10 +71,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const data = {
       fechaAuditoria: document.getElementById('fecha-auditoria').value,
       fechaGestion: document.getElementById('fecha-gestion').value,
-      proceso: procesoSelect.value,
-      asesor: asesorSelect.value,
+      proceso: document.getElementById('proceso').value,
+      asesor: document.getElementById('asesor').value,
       evaluador: evaluador,
-      radicado: radicadoInput.value,
+      radicado: document.getElementById('radicado').value,
       c1: document.getElementById('c1').value,
       c2: document.getElementById('c2').value,
       c3: document.getElementById('c3').value,
@@ -89,30 +89,30 @@ document.addEventListener('DOMContentLoaded', function () {
       semaforo: semaforo
     };
 
-    fetch("https://script.google.com/macros/s/AKfycby4Rz-211OzxJbLEGEgj9m7DwXzK-WyxwktreaN0dU4f6jMDfVxKgWfQ9xoW6JecMSd/exec", {
+    // ✅ Enviar a Google Sheets - URL ACTUALIZADA:
+    fetch("https://script.google.com/macros/s/AKfycbx_NtKOyxjSeAeuvaEvYN-aGEB6d7luqi6RcdOaqN7J_245K3wDa2JVNfGHX1QaYoDZ/exec", {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
     }).then(res => res.text())
-      .then(console.log)
-      .catch(console.error);
+      .then(resp => console.log("Enviado a Sheets:", resp))
+      .catch(err => console.error("Error al enviar a Sheets:", err));
 
     this.reset();
     notaSpan.textContent = '100%';
   });
 
-  document.getElementById('btnExportarExcel').addEventListener('click', () => {
+  document.getElementById('btnExportarExcel').addEventListener('click', function () {
     const headers = ["Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
       "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8",
       "Observaciones", "Retroalimentación", "Nota", "Semáforo"];
-
     const fila = [
       document.getElementById('fecha-auditoria').value,
       document.getElementById('fecha-gestion').value,
-      procesoSelect.value,
-      asesorSelect.value,
-      evaluadorSelect.value,
-      radicadoInput.value,
+      document.getElementById('proceso').value,
+      document.getElementById('asesor').value,
+      document.getElementById('evaluador').value,
+      document.getElementById('radicado').value,
       document.getElementById('c1').value,
       document.getElementById('c2').value,
       document.getElementById('c3').value,
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('c8').value,
       document.getElementById('observaciones').value,
       document.getElementById('feedback').value,
-      notaSpan.textContent,
+      document.getElementById('nota').textContent,
       calcularNota() >= 90 ? '🟢 Excelente' : calcularNota() >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar'
     ];
 
