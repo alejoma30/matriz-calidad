@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     "NOTIFICACIONES - PQRSD": ["Insuasty, Daniel Ismael"],
     "NOTIFICACIONES": ["Gomez, Natalia", "Gutierrez, Valentina", "Alvarez, Carlos William", "Garavito, Gabriela Alexandra", "Mahecha, Diego Andres", "Peña, Jairo Esteban", "Rincon, Nathaly Dayana", "Sandoval, Diego Mauricio", "Santamaria, Edinson Yesid", "Hernandez, Diego Andres", "John Edwar Olarte"],
     "LEGALIZACIONES": ["Castiblanco, Jonathan Javier", "Saavedra, Jenny Alexandra", "Ojeda, Maria Alejandra", "Rodriguez, Andrés Eduardo", "Ruiz, Daissy Katerine"],
-    "ANTENCION PRESENCIAL": ["Alvarez, Katherine"]
+    "ANTENCION PRESENCIAL": ["Alvarez, Katherine"],
   };
 
   const lideresCalidad = ["Rene Alejandro Mayorga", "Andrea Guzman Botache"];
@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const cumplimientoSelects = document.querySelectorAll('.cumplimiento');
   const notaSpan = document.getElementById('nota');
   const pesos = [50, 30, 20];
+
   const calcularNota = () => {
     let nota = 100;
     for (let i = 0; i < cumplimientoSelects.length; i++) {
@@ -57,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
+
     const nota = calcularNota();
     const semaforo = nota >= 90 ? '🟢 Excelente' : nota >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar';
     const evaluador = document.getElementById('evaluador').value;
@@ -84,20 +86,21 @@ document.addEventListener('DOMContentLoaded', function () {
       semaforo: semaforo
     };
 
-    // Enviar a backend en Vercel
-    fetch("https://matriz-calidad.vercel.app/api/save", {
+    // ✅ Enviar a Google Sheets
+    fetch("https://script.google.com/macros/s/AKfycbz875DEEnTkNiYEjmdJI15MR0gvrW07GQNtt_JSG0KVOHmx58zQN3GVHgl1XZq3f_Y9/exec", {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
-    }).then(res => res.json())
-      .then(resp => console.log("Respuesta del backend:", resp))
-      .catch(err => console.error("Error al enviar:", err));
+    }).then(res => res.text())
+      .then(resp => console.log("Enviado a Sheets:", resp))
+      .catch(err => console.error("Error al enviar a Sheets:", err));
 
+    // Limpiar formulario
     this.reset();
     notaSpan.textContent = '100%';
   });
 
-  // Exportar a Excel
+  // Botón Exportar a Excel
   document.getElementById('btnExportarExcel').addEventListener('click', function () {
     const headers = ["Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
       "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8",
