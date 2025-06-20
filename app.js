@@ -8,7 +8,15 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const lideresCalidad = ["Rene Alejandro Mayorga", "Andrea Guzman Botache"];
+
+  const procesoSelect = document.getElementById('proceso');
+  const asesorSelect = document.getElementById('asesor');
   const evaluadorSelect = document.getElementById('evaluador');
+
+  // Verificación: si no existen los elementos, salimos
+  if (!procesoSelect || !asesorSelect || !evaluadorSelect) return;
+
+  // Cargar los evaluadores
   lideresCalidad.forEach(nombre => {
     const option = document.createElement('option');
     option.value = nombre;
@@ -16,9 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     evaluadorSelect.appendChild(option);
   });
 
-  const procesoSelect = document.getElementById('proceso');
-  const asesorSelect = document.getElementById('asesor');
-
+  // Al cambiar el proceso, se actualizan los asesores
   procesoSelect.addEventListener('change', () => {
     const proceso = procesoSelect.value;
     const asesores = asesoresPorProceso[proceso] || [];
@@ -31,9 +37,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Lógica de cálculo de nota
   const cumplimientoSelects = document.querySelectorAll('.cumplimiento');
   const notaSpan = document.getElementById('nota');
   const pesos = [50, 30, 20];
+
   const calcularNota = () => {
     let nota = 100;
     for (let i = 0; i < cumplimientoSelects.length; i++) {
@@ -55,11 +63,12 @@ document.addEventListener('DOMContentLoaded', function () {
     select.addEventListener('change', updateNota);
   });
 
-  // 🟡 YA NO SE RESTRINGE EL RADICADO
+  // Ya no se restringe el campo de radicado
   // document.getElementById('radicado').addEventListener('input', function () {
   //   this.value = this.value.replace(/\D/g, '');
   // });
 
+  // Guardar monitoreo
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
     const nota = calcularNota();
@@ -89,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
       semaforo: semaforo
     };
 
-    // Enviar a Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbwiUeBzoOXJWlzEbZ2CxNZ0pEn-UliN7D-hwLnFz3ObFPbY4oO7rjulTwxd45PvtjkCKQ/exec", {
       method: 'POST',
       body: JSON.stringify(data),
