@@ -1,78 +1,58 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f2f7ff;
-  margin: 0;
-  padding: 0;
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
+  padding: 20px;
 }
 
 header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  background-color: #003366;
-  color: white;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.logo {
-  height: 50px;
-}
-
-h1 {
-  text-align: center;
-  margin: 20px 0;
-}
-
-form {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
+header img {
+  height: 60px;
 }
 
 .grupo {
   margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-label {
-  display: block;
-  font-weight: bold;
+.grupo label {
+  min-width: 150px;
 }
 
-select, input, textarea {
+table {
   width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
   padding: 8px;
-  margin-top: 5px;
+  text-align: left;
+}
+
+h1, h2, h3 {
+  text-align: center;
+  color: #2c3e50;
 }
 
 textarea {
-  resize: vertical;
-}
-
-.tabla-dimensiones {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-.tabla-dimensiones th, .tabla-dimensiones td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center;
 }
 
 .botones {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #004a99;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  gap: 10px;
+  justify-content: center;
 }

@@ -1,10 +1,10 @@
-.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
   const asesoresPorProceso = {
     "PQRSD": ["Avila, Marcela Paola", "Beltran, Nicole Juliana", "Castro, Diana Angelica", "Fuentes, Sandra Milena", "Lopez, Angela Marcela", "Roa, Cindy Paola", "Sanchez, Hellen Viviana", "Nadya Eliscet Bernal Escobar"],
     "NOTIFICACIONES - PQRSD": ["Insuasty, Daniel Ismael"],
     "NOTIFICACIONES": ["Gomez, Natalia", "Gutierrez, Valentina", "Alvarez, Carlos William", "Garavito, Gabriela Alexandra", "Mahecha, Diego Andres", "Peña, Jairo Esteban", "Rincon, Nathaly Dayana", "Sandoval, Diego Mauricio", "Santamaria, Edinson Yesid", "Hernandez, Diego Andres", "John Edwar Olarte"],
     "LEGALIZACIONES": ["Castiblanco, Jonathan Javier", "Saavedra, Jenny Alexandra", "Ojeda, Maria Alejandra", "Rodriguez, Andrés Eduardo", "Ruiz, Daissy Katerine"],
-    "ANTENCION PRESENCIAL": ["Alvarez, Katherine"],
+    "ANTENCION PRESENCIAL": ["Alvarez, Katherine"]
   };
 
   const lideresCalidad = ["Rene Alejandro Mayorga", "Andrea Guzman Botache"];
@@ -18,10 +18,8 @@
 
   const procesoSelect = document.getElementById('proceso');
   const asesorSelect = document.getElementById('asesor');
-
   procesoSelect.addEventListener('change', () => {
-    const proceso = procesoSelect.value;
-    const asesores = asesoresPorProceso[proceso] || [];
+    const asesores = asesoresPorProceso[procesoSelect.value] || [];
     asesorSelect.innerHTML = '<option value="">-- Selecciona --</option>';
     asesores.forEach(nombre => {
       const option = document.createElement('option');
@@ -34,6 +32,7 @@
   const cumplimientoSelects = document.querySelectorAll('.cumplimiento');
   const notaSpan = document.getElementById('nota');
   const pesos = [50, 30, 20];
+
   const calcularNota = () => {
     let nota = 100;
     for (let i = 0; i < cumplimientoSelects.length; i++) {
@@ -47,34 +46,31 @@
   };
 
   const updateNota = () => {
-    const nota = calcularNota();
-    notaSpan.textContent = `${nota}%`;
+    notaSpan.textContent = `${calcularNota()}%`;
   };
 
   cumplimientoSelects.forEach(select => {
     select.addEventListener('change', updateNota);
   });
 
-  const radicadoInput = document.getElementById('radicado');
-  radicadoInput.addEventListener('input', function () {
+  document.getElementById('radicado').addEventListener('input', function () {
     this.value = this.value.replace(/\D/g, '');
   });
 
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
     const nota = calcularNota();
-    const semaforo = nota >= 90 ? '🟢 Excelente' : nota >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar';
     const evaluador = document.getElementById('evaluador').value;
+    const semaforo = nota >= 90 ? '🟢 Excelente' : nota >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar';
 
     alert(`${evaluador}, la auditoría se ha guardado con éxito.\nNota: ${nota}%\n${semaforo}`);
 
-    // Preparar datos
     const data = {
       fechaAuditoria: document.getElementById('fecha-auditoria').value,
       fechaGestion: document.getElementById('fecha-gestion').value,
-      proceso: document.getElementById('proceso').value,
-      asesor: document.getElementById('asesor').value,
-      evaluador: evaluador,
+      proceso: procesoSelect.value,
+      asesor: asesorSelect.value,
+      evaluador,
       radicado: document.getElementById('radicado').value,
       c1: document.getElementById('c1').value,
       c2: document.getElementById('c2').value,
@@ -86,35 +82,32 @@
       c8: document.getElementById('c8').value,
       observaciones: document.getElementById('observaciones').value,
       retroalimentacion: document.getElementById('feedback').value,
-      nota: nota,
-      semaforo: semaforo
+      nota,
+      semaforo
     };
 
-    // Enviar a Google Sheets
-fetch("https://script.google.com/macros/s/AKfycby4Rz-211OzxJbLEGEgj9m7DwXzK-WyxwktreaN0dU4f6jMDfVxKgWfQ9xoW6JecMSd/exec", {
-  method: 'POST',
-  body: JSON.stringify(data),
-  headers: { 'Content-Type': 'application/json' }
-})
-.then(res => res.text())
-.then(resp => console.log("Enviado a Sheets:", resp))
-.catch(err => console.error("Error al enviar a Sheets:", err));
+    fetch("https://script.google.com/macros/s/AKfycby4Rz-211OzxJbLEGEgj9m7DwXzK-WyxwktreaN0dU4f6jMDfVxKgWfQ9xoW6JecMSd/exec", {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    }).then(res => res.text())
+      .then(resp => console.log("Enviado a Sheets:", resp))
+      .catch(err => console.error("Error al enviar a Sheets:", err));
 
     this.reset();
-    notaSpan.textContent = '100%';
+    notaSpan.textContent = "100%";
   });
 
-  // Exportar a Excel
-  document.getElementById('btnExportarExcel').addEventListener('click', function () {
+  document.getElementById('btnExportarExcel').addEventListener('click', () => {
     const headers = ["Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
       "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8",
       "Observaciones", "Retroalimentación", "Nota", "Semáforo"];
     const fila = [
       document.getElementById('fecha-auditoria').value,
       document.getElementById('fecha-gestion').value,
-      document.getElementById('proceso').value,
-      document.getElementById('asesor').value,
-      document.getElementById('evaluador').value,
+      procesoSelect.value,
+      asesorSelect.value,
+      evaluadorSelect.value,
       document.getElementById('radicado').value,
       document.getElementById('c1').value,
       document.getElementById('c2').value,
@@ -126,7 +119,7 @@ fetch("https://script.google.com/macros/s/AKfycby4Rz-211OzxJbLEGEgj9m7DwXzK-Wyxw
       document.getElementById('c8').value,
       document.getElementById('observaciones').value,
       document.getElementById('feedback').value,
-      document.getElementById('nota').textContent,
+      notaSpan.textContent,
       calcularNota() >= 90 ? '🟢 Excelente' : calcularNota() >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar'
     ];
 
