@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Enviar a Google Sheets
-    fetch("https://script.google.com/macros/s/AKfycbzO0qCaapXdcD9LcRXmS4nUToBXyyvNJb1CsPp5KX_LgWH1788yMF49voyd8hWQMJg09w/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwiUeBzoOXJWlzEbZ2CxNZ0pEn-UliN7D-hwLnFz3ObFPbY4oO7rjulTwxd45PvtjkCKQ/exec", {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
