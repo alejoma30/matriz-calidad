@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matriz de Calidad</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <img src="logo-emergia.png" alt="Logo Emergía" class="logo" />
+    <img src="logo-mineducacion.png" alt="Logo MEN" class="logo" />
+    <h1>Matriz de Evaluación de Calidad</h1>
+  </header>
+
+  <main>
+    <form id="formulario">
+      <div class="grupo">
+        <label for="fechaAuditoria">Fecha Auditoría:</label>
+        <input type="date" id="fechaAuditoria" required />
+      </div>
+
+      <div class="grupo">
+        <label for="fechaGestion">Fecha de Gestión Auditada:</label>
+        <input type="date" id="fechaGestion" required />
+      </div>
+
+      <div class="grupo">
+        <label for="proceso">Proceso:</label>
+        <select id="proceso" required>
+          <option value="">Seleccione un proceso</option>
+          <option value="PQRSD">PQRSD</option>
+          <option value="NOTIFICACIONES - PQRSD">NOTIFICACIONES - PQRSD</option>
+          <option value="NOTIFICACIONES">NOTIFICACIONES</option>
+          <option value="LEGALIZACIONES">LEGALIZACIONES</option>
+          <option value="ANTENCION PRESENCIAL">ANTENCION PRESENCIAL</option>
+        </select>
+      </div>
+
+      <div class="grupo">
+        <label for="asesor">Asesor:</label>
+        <select id="asesor" required></select>
+      </div>
+
+      <div class="grupo">
+        <label for="evaluador">Evaluador:</label>
+        <select id="evaluador" required>
+          <option value="">Seleccione evaluador</option>
+          <option value="Rene Alejandro Mayorga">Rene Alejandro Mayorga</option>
+          <option value="Andrea Guzman Botache">Andrea Guzman Botache</option>
+        </select>
+      </div>
+
+      <div class="grupo">
+        <label for="radicado">Radicado:</label>
+        <input type="number" id="radicado" required />
+      </div>
+
+      <table class="tabla-dimensiones">
+        <thead>
+          <tr>
+            <th>Peso</th>
+            <th>Tipo Error</th>
+            <th>Precisión</th>
+            <th>Dimensión</th>
+            <th>Cumplimiento</th>
+          </tr>
+        </thead>
+        <tbody id="tablaDimensiones">
+          <!-- Se llenará desde JavaScript -->
+        </tbody>
+      </table>
+
+      <div class="grupo">
+        <label for="observaciones">Observaciones:</label>
+        <textarea id="observaciones" rows="3"></textarea>
+      </div>
+
+      <div class="grupo">
+        <label for="feedback">Retroalimentación:</label>
+        <textarea id="feedback" rows="3"></textarea>
+      </div>
+
+      <div class="grupo">
+        <p id="notaFinal">Nota: 100%</p>
+      </div>
+
+      <div class="botones">
+        <button type="submit">Guardar Evaluación</button>
+        <button type="button" id="btnExportarExcel">Exportar a Excel</button>
+      </div>
+    </form>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
