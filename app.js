@@ -59,8 +59,13 @@ document.addEventListener('DOMContentLoaded', function () {
     select.addEventListener('change', updateNota);
   });
 
-  // Fecha auditoría por defecto
   document.getElementById('fecha-auditoria').valueAsDate = new Date();
+
+  const guardarEnLocalStorage = (registro) => {
+    const registros = JSON.parse(localStorage.getItem("monitoreos")) || [];
+    registros.push(registro);
+    localStorage.setItem("monitoreos", JSON.stringify(registros));
+  };
 
   document.getElementById('formulario').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -68,15 +73,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const semaforo = nota >= 90 ? '🟢 Excelente' : nota >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar';
     const evaluador = document.getElementById('evaluador').value;
 
-    alert(`${evaluador}, la auditoría se ha guardado con éxito.\nNota: ${nota}%\n${semaforo}`);
-
     const data = {
-      fechaAuditoria: document.getElementById('fecha-auditoria').value,
-      fechaGestion: document.getElementById('fecha-gestion').value,
-      proceso: document.getElementById('proceso').value,
-      asesor: document.getElementById('asesor').value,
-      evaluador: evaluador,
-      radicado: document.getElementById('radicado').value,
+      "Fecha Auditoría": document.getElementById('fecha-auditoria').value,
+      "Fecha Gestión": document.getElementById('fecha-gestion').value,
+      "Proceso": document.getElementById('proceso').value,
+      "Asesor": document.getElementById('asesor').value,
+      "Evaluador": evaluador,
+      "Radicado": document.getElementById('radicado').value,
       "Uso de plantillas": document.getElementById('c1').value,
       "Claridad del lenguaje": document.getElementById('c2').value,
       "Redacción – puntuación": document.getElementById('c3').value,
@@ -85,19 +88,15 @@ document.addEventListener('DOMContentLoaded', function () {
       "Oportunidad en la respuesta": document.getElementById('c6').value,
       "Pertinencia de la respuesta": document.getElementById('c7').value,
       "Desempeño": document.getElementById('c8').value,
-      observaciones: document.getElementById('observaciones').value,
-      retroalimentacion: document.getElementById('feedback').value,
-      nota: nota,
-      semaforo: semaforo
+      "Observaciones": document.getElementById('observaciones').value,
+      "Retroalimentación": document.getElementById('feedback').value,
+      "Nota": `${nota}%`,
+      "Semáforo": semaforo
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbz875DEEnTkNiYEjmdJI15MR0gvrW07GQNtt_JSG0KVOHmx58zQN3GVHgl1XZq3f_Y9/exec", {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' }
-    }).then(res => res.text())
-      .then(resp => console.log("Enviado a Sheets:", resp))
-      .catch(err => console.error("Error al enviar a Sheets:", err));
+    guardarEnLocalStorage(data);
+
+    alert(`${evaluador}, la auditoría se ha guardado con éxito.\nNota: ${nota}%\n${semaforo}`);
 
     this.reset();
     notaSpan.textContent = '100%';
@@ -105,36 +104,20 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.getElementById('btnExportarExcel').addEventListener('click', function () {
-    const headers = [
-      "Fecha Auditoría", "Fecha Gestión", "Proceso", "Asesor", "Evaluador", "Radicado",
-      "Uso de plantillas", "Claridad del lenguaje", "Redacción – puntuación", "Redacción – ortografía",
-      "Interpretación de la solicitud", "Oportunidad en la respuesta", "Pertinencia de la respuesta", "Desempeño",
-      "Observaciones", "Retroalimentación", "Nota", "Semáforo"
-    ];
-    const fila = [
-      document.getElementById('fecha-auditoria').value,
-      document.getElementById('fecha-gestion').value,
-      document.getElementById('proceso').value,
-      document.getElementById('asesor').value,
-      document.getElementById('evaluador').value,
-      document.getElementById('radicado').value,
-      document.getElementById('c1').value,
-      document.getElementById('c2').value,
-      document.getElementById('c3').value,
-      document.getElementById('c4').value,
-      document.getElementById('c5').value,
-      document.getElementById('c6').value,
-      document.getElementById('c7').value,
-      document.getElementById('c8').value,
-      document.getElementById('observaciones').value,
-      document.getElementById('feedback').value,
-      document.getElementById('nota').textContent,
-      calcularNota() >= 90 ? '🟢 Excelente' : calcularNota() >= 80 ? '🟡 Aceptable' : '🔴 Debe mejorar'
-    ];
+    const registros = JSON.parse(localStorage.getItem("monitoreos")) || [];
+
+    if (registros.length === 0) {
+      alert("No hay monitoreos guardados para exportar.");
+      return;
+    }
+
+    const headers = Object.keys(registros[0]);
+    const filas = registros.map(obj => headers.map(header => obj[header]));
 
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet([headers, fila]);
-    XLSX.utils.book_append_sheet(wb, ws, "Monitoreo");
-    XLSX.writeFile(wb, "monitoreo.xlsx");
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...filas]);
+    XLSX.utils.book_append_sheet(wb, ws, "Monitoreos");
+
+    XLSX.writeFile(wb, "monitoreos_calidad.xlsx");
   });
 });
